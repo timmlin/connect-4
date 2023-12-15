@@ -10,24 +10,32 @@ SCREENHEIGHT = 125 * (BOARDHEIGHT + 1)
 
 def initBoard():
     """initialises a 7x6 board of -s"""
-    return [[ '-' for j in range(7)] for i in range(6)]
+    return [[ '-' for j in range(BOARDWIDTH)] for i in range(BOARDHEIGHT)]
 
-def drawBoard(screen, mousePos ):
+def drawBoard(screen, mousePos, board ):
     """draws the connect 4 board and backgorund"""
     pygame.draw.rect(screen,(255,255,255), (0,0, SCREENWIDTH, 125)) # draws a white rectangle above the baord to prvent multiple tokens being drawn
     pygame.draw.rect(screen, (0,0,225), (0,125, SCREENWIDTH, SCREENHEIGHT)) 
 
-    for row in range(1, SCREENHEIGHT):
-            pygame.draw.line(screen, (0,0,0), (0, 125 * row), (SCREENWIDTH, 125 * row), width=3)
+    #draws horizontal lines
+    for rowNum in range(1, BOARDHEIGHT +1):
+            pygame.draw.line(screen, (0,0,0), (0, 125 * rowNum), (SCREENWIDTH, 125 * rowNum), width=3)
+    #draws vertical lines
+    for colNum in range(BOARDWIDTH+1):
+            pygame.draw.line(screen, (0,0,0), (125 * colNum, 125 ), (125 * colNum, SCREENHEIGHT), width=3)
 
-    for column in range(1, SCREENWIDTH):
-            pygame.draw.line(screen, (0,0,0), (125 * column, 125 ), (125 * column, SCREENHEIGHT), width=3)
+    #highlights the current row 
+    for colNum in range(BOARDWIDTH+1):
+        if mousePos[0] > 125 * colNum and mousePos[0] <= 125 * (colNum + 1):
+            pygame.draw.line(screen, (100,100,100), ((125 * (colNum + 1)), 125 ), ((125 * (colNum + 1)), SCREENHEIGHT), width=3)                
+            pygame.draw.line(screen, (100,100,100), (125 * colNum, 125 ), (125 * colNum, SCREENHEIGHT), width=3)
 
     #draws the tokens or empty spaces on board
-    for column in range(BOARDWIDTH):
-         for row in range(BOARDWIDTH):
-              pygame.draw.circle(screen, (255,255,255), (125*column + 62.5, 125*row + 62.5), 50)
-         
+    for colNum in range(BOARDWIDTH):
+         for rowNum in range(BOARDHEIGHT +1 ):
+            pygame.draw.circle(screen, (255,255,255), (125*colNum + 62.5, 125*rowNum + 62.5), 50)
+
+     
         
 
 def drawToken(screen, turnOne, mousePos):
@@ -57,7 +65,7 @@ def main():
                 exit()
 
             if event.type == pygame.MOUSEMOTION:
-                drawBoard(screen) # redraws the board after each mouse movement
+                drawBoard(screen, mousePos, board) # redraws the board after each mouse movement
                 drawToken(screen, turnOne, mousePos)
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
