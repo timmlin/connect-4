@@ -1,3 +1,4 @@
+import math 
 import pygame
 from sys import exit
 
@@ -9,11 +10,16 @@ SCREENHEIGHT = 125 * (BOARDHEIGHT + 1)
 
 
 def initBoard():
-    """initialises a 7x6 board of -s"""
+    """initialises a 7x6 board of '-'s"""
     return [[ '-' for j in range(BOARDWIDTH)] for i in range(BOARDHEIGHT)]
 
+#------------------------------------------------
+#-----------GUI-Functions------------------------
+#------------------------------------------------
 def drawBoard(screen, mousePos, board ):
-    """draws the connect 4 board and backgorund"""
+    """draws the connect 4 board and backgorund black lines are drawn to seperate the spaces
+    each square has a white circle to indicate the square is empty or filled with a red or yellow
+    token. The current row the mouse is in is highlighted in grey."""
     pygame.draw.rect(screen,(255,255,255), (0,0, SCREENWIDTH, 125)) # draws a white rectangle above the baord to prvent multiple tokens being drawn
     pygame.draw.rect(screen, (0,0,225), (0,125, SCREENWIDTH, SCREENHEIGHT)) 
 
@@ -32,12 +38,10 @@ def drawBoard(screen, mousePos, board ):
 
     #draws the tokens or empty spaces on board
     for colNum in range(BOARDWIDTH):
-         for rowNum in range(BOARDHEIGHT +1 ):
-            pygame.draw.circle(screen, (255,255,255), (125*colNum + 62.5, 125*rowNum + 62.5), 50)
+         for rowNum in range(BOARDHEIGHT):
+            pygame.draw.circle(screen, (255,255,255), (125*colNum + 62.5, 125*(rowNum+1)+ 62.5), 50)
 
      
-        
-
 def drawToken(screen, turnOne, mousePos):
     """draws a visual representation of the token the player is about to use"""
     if turnOne:
@@ -45,6 +49,18 @@ def drawToken(screen, turnOne, mousePos):
     else:
         pygame.draw.circle(screen, (255,255,0), (mousePos[0], 66), 50)
      
+
+#------------------------------------------
+#-------Game-Logic-Functions---------------
+#------------------------------------------
+
+def checkForEmptySpace(board, mousePos):
+    """checks if the column has an empty"""
+    curCol = math.floor(mousePos[0]/125)
+    for rowNum in range(BOARDHEIGHT):
+        if board[rowNum][curCol] == '-':
+            return True
+    return False
 
 def main():
     pygame.init()
