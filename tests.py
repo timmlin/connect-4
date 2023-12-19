@@ -14,7 +14,6 @@ class testInitBoard(unittest.TestCase):
         self.assertEqual(len(board), BOARDHEIGHT)
         self.assertEqual(len(board[0]), BOARDWIDTH)
         for row in board:
-           # print(row)
             for cell in row:
                 self.assertEqual(cell, '-')
         
@@ -29,7 +28,7 @@ class testGetNextEmptySpace(unittest.TestCase):
         board = initBoard()
         
         for colNum in range(BOARDWIDTH):
-            self.assertEqual(getNextEmptySpace(board, [125, colNum*125]), [BOARDHEIGHT-1, colNum])
+            self.assertEqual(getNextEmptySpace(board, [125*colNum, 125]), [BOARDHEIGHT-1, colNum])
 
 
     def testNonEmptyBoard(self):
@@ -37,7 +36,7 @@ class testGetNextEmptySpace(unittest.TestCase):
         when the column is not empty"""
         board = initBoard()
         board[3][3] = 'Y'
-        self.assertEqual(getNextEmptySpace(board, [125, 3*125]), [2, 3])
+        self.assertEqual(getNextEmptySpace(board, [3*125, 125]), [2, 3])
 
 
     def testFullBoard(self):
@@ -46,7 +45,7 @@ class testGetNextEmptySpace(unittest.TestCase):
         for row in range(BOARDHEIGHT):
             for col in range(BOARDWIDTH):
                 board[row][col] = 'R'
-        self.assertEqual(getNextEmptySpace(board, [125, 3*125]), None)
+        self.assertEqual(getNextEmptySpace(board, [3*125, 125]), None)
 
 
 

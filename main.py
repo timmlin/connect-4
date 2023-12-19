@@ -13,7 +13,7 @@ SCREENHEIGHT = 125 * (BOARDHEIGHT + 1)
 #------------------------------------------------
 #-----------GUI-Functions------------------------
 #------------------------------------------------
-def drawBoard(screen, mousePos, board ):
+def drawBoard(screen, nextEmptySpace, board, isPlayerOne):
     """draws the connect 4 board and backgorund black lines are drawn to seperate the spaces
     each square has a white circle to indicate the square is empty or filled with a red or yellow
     token. The current row the mouse is in is highlighted in grey."""
@@ -29,22 +29,26 @@ def drawBoard(screen, mousePos, board ):
 
     #highlights the current row 
     for colNum in range(BOARDWIDTH+1):
-        if mousePos[0] > 125 * colNum and mousePos[0] <= 125 * (colNum + 1):
+        if nextEmptySpace[0] > 125 * colNum and nextEmptySpace[0] <= 125 * (colNum + 1):
             pygame.draw.line(screen, (100,100,100), ((125 * (colNum + 1)), 125 ), ((125 * (colNum + 1)), SCREENHEIGHT), width=3)                
             pygame.draw.line(screen, (100,100,100), (125 * colNum, 125 ), (125 * colNum, SCREENHEIGHT), width=3)
 
     #draws the tokens or empty spaces on board
     for colNum in range(BOARDWIDTH):
          for rowNum in range(BOARDHEIGHT):
-            pygame.draw.circle(screen, (255,255,255), (125*colNum + 62.5, 125*(rowNum+1)+ 62.5), 50)
-
-     
-def drawToken(screen, turnOne, mousePos):
-    """draws a visual representation of the token the player is about to use"""
-    if turnOne:
-        pygame.draw.circle(screen, (255,0,0), (mousePos[0], 66), 50)
+            if board[rowNum][colNum] == 'R':
+                pygame.draw.circle(screen, (255,0,0), (125*colNum + 62.5, 125*(rowNum+1)+ 62.5), 50)
+            elif board[rowNum][colNum] == 'Y':
+                pygame.draw.circle(screen, (255,255,0), (125*colNum + 62.5, 125*(rowNum+1)+ 62.5), 50)
+            else:
+                pygame.draw.circle(screen, (255,255,255), (125*colNum + 62.5, 125*(rowNum+1)+ 62.5), 50)
+    
+    #draws a visual representation of the token the player is about to use"""
+    if isPlayerOne:
+        pygame.draw.circle(screen, (255,0,0), (nextEmptySpace[0], 66), 50)
     else:
-        pygame.draw.circle(screen, (255,255,0), (mousePos[0], 66), 50)
+        pygame.draw.circle(screen, (255,255,0), (nextEmptySpace[0], 66), 50)
+
      
 
 #------------------------------------------
@@ -53,16 +57,14 @@ def drawToken(screen, turnOne, mousePos):
 
 
 def initBoard():
-    """initialises a 7x6 board of '-'s"""
-    board = [[ '-' for j in range(BOARDWIDTH)] for i in range(BOARDHEIGHT)]
-    
-    return board
+    """initialises a 7x6 board of '-'s"""  
+    return [[ '-' for j in range(BOARDWIDTH)] for i in range(BOARDHEIGHT)]
 
 
 def getNextEmptySpace(board, mousePos):
     """retuns the board coordinates of the next empty
     space in the column the mouse is in. Returns None if the column is full"""
-    curCol = math.floor(mousePos[1]/125)
+    curCol = math.floor(mousePos[0]/125)
     nextEmptySpace = None
 
     for rowNum in range(BOARDHEIGHT):
@@ -72,11 +74,37 @@ def getNextEmptySpace(board, mousePos):
             break
     return nextEmptySpace
 
+def dropToken(board, nextEmptySpace, isPlayerOne):
+    """drops a token in the selected column and returns the new board"""
+    if isPlayerOne:
+        board[nextEmptySpace[0]][nextEmptySpace[1]] = 'R'
+    else:
+        board[nextEmptySpace[0]][nextEmptySpace[1]] = 'Y'
+    return board
+
+
+
+
+
+
+
+
+
+#----------------------
+#---------Main---------
+#----------------------
+
+def printBoard(board):
+    for row in board:
+        print(row)
+    print("\n")
+
+#main game loop
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
     pygame.display.set_caption("Connect Four")
-    turnOne = True
+    isPlayerOne = True
     board = initBoard()
 
 
@@ -89,14 +117,19 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-
-            if event.type == pygame.MOUSEMOTION:
-                drawBoard(screen, mousePos, board) # redraws the board after each mouse movement
-                drawToken(screen, turnOne, mousePos)
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                turnOne = not turnOne
-                drawToken(screen, turnOne, mousePos)
+                nextEmptySpace = getNextEmptySpace(board, mousePos)
+
+                if nextEmptySpace != None:
+                    board = dropToken(board, nextEmptySpace, isPlayerOne)
+                    
+                    isPlayerOne = not isPlayerOne
+                    printBoard(board)
+
+
+            drawBoard(screen, mousePos, board, isPlayerOne) # redraws the board after each mouse movement
+
 
         
                 
