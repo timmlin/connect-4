@@ -39,6 +39,7 @@ class testGetNextEmptySpace(unittest.TestCase):
         board[3][3] = 'Y'
         self.assertEqual(getNextEmptySpace(board, [125, 3*125]), [2, 3])
 
+
     def testFullBoard(self):
         """ tests the token will not be dropped when the column is full"""
         board = initBoard()
