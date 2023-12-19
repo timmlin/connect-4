@@ -9,9 +9,6 @@ SCREENWIDTH = 125 * BOARDWIDTH
 SCREENHEIGHT = 125 * (BOARDHEIGHT + 1)
 
 
-def initBoard():
-    """initialises a 7x6 board of '-'s"""
-    return [[ '-' for j in range(BOARDWIDTH)] for i in range(BOARDHEIGHT)]
 
 #------------------------------------------------
 #-----------GUI-Functions------------------------
@@ -54,13 +51,26 @@ def drawToken(screen, turnOne, mousePos):
 #-------Game-Logic-Functions---------------
 #------------------------------------------
 
-def checkForEmptySpace(board, mousePos):
-    """checks if the column has an empty"""
-    curCol = math.floor(mousePos[0]/125)
+
+def initBoard():
+    """initialises a 7x6 board of '-'s"""
+    board = [[ '-' for j in range(BOARDWIDTH)] for i in range(BOARDHEIGHT)]
+    
+    return board
+
+
+def getNextEmptySpace(board, mousePos):
+    """retuns the board coordinates of the next empty
+    space in the column the mouse is in. Returns None if the column is full"""
+    curCol = math.floor(mousePos[1]/125)
+    nextEmptySpace = None
+
     for rowNum in range(BOARDHEIGHT):
         if board[rowNum][curCol] == '-':
-            return True
-    return False
+            nextEmptySpace = [rowNum, curCol]
+        else:
+            break
+    return nextEmptySpace
 
 def main():
     pygame.init()
