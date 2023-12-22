@@ -28,7 +28,7 @@ class testGetNextEmptySpace(unittest.TestCase):
         board = initBoard()
         
         for colNum in range(BOARDWIDTH):
-            self.assertEqual(getNextEmptySpace(board, [125*colNum, 125]), [BOARDHEIGHT-1, colNum])
+            self.assertEqual(getNextEmptySpace(board, [SQUARESIZE*colNum, SQUARESIZE]), [BOARDHEIGHT-1, colNum])
 
 
     def testNonEmptyBoard(self):
@@ -36,7 +36,7 @@ class testGetNextEmptySpace(unittest.TestCase):
         when the column is not empty"""
         board = initBoard()
         board[3][3] = 'Y'
-        self.assertEqual(getNextEmptySpace(board, [3*125, 125]), [2, 3])
+        self.assertEqual(getNextEmptySpace(board, [3*SQUARESIZE, SQUARESIZE]), [2, 3])
 
 
     def testFullBoard(self):
@@ -45,8 +45,25 @@ class testGetNextEmptySpace(unittest.TestCase):
         for row in range(BOARDHEIGHT):
             for col in range(BOARDWIDTH):
                 board[row][col] = 'R'
-        self.assertEqual(getNextEmptySpace(board, [3*125, 125]), None)
+        self.assertEqual(getNextEmptySpace(board, [3*SQUARESIZE, SQUARESIZE]), None)
 
+
+
+class testDropToken(unittest.TestCase):
+    """tests the dropToken function will place a token in the
+    correct column and the correct colour is dropped"""
+
+    def testDropPlayerOneToken(self):
+        """drops player ones's red token in column 3"""
+        board = initBoard()
+        board = dropToken(board, [3, 0], True)
+        self.assertEqual(board[3][0], 'R')
+
+    def testDropPlayerTwoToken(self):
+        """drops player two's yellow token in column 3"""
+        board = initBoard()
+        board = dropToken(board, [5,6], False)
+        self.assertEqual(board[5][6], 'Y')
 
 
 
