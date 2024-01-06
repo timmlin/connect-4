@@ -85,11 +85,32 @@ def dropToken(board, nextEmptySpace, isPlayerOne):
     return board
 
 
+def checkForWin(board, token):
+    # Check for a horizontal win
+    for row in board:
+        for col in range(len(row) - 3):
+            if row[col] == row[col + 1] == row[col + 2] == row[col + 3] == token:
+                return True
 
+    # Check for a vertical win
+    for col in range(len(board[0])):
+        for row in range(len(board) - 3):
+            if board[row][col] == board[row + 1][col] == board[row + 2][col] == board[row + 3][col] == token:
+                return True
 
+    # Check for a diagonal win (from bottom-left to top-right)
+    for row in range(len(board) - 3):
+        for col in range(len(board[0]) - 3):
+            if board[row][col] == board[row + 1][col + 1] == board[row + 2][col + 2] == board[row + 3][col + 3] == token:
+                return True
 
+    # Check for a diagonal win (from top-left to bottom-right)
+    for row in range(3, len(board)):
+        for col in range(len(board[0]) - 3):
+            if board[row][col] == board[row - 1][col + 1] == board[row - 2][col + 2] == board[row - 3][col + 3] == token:
+                return True
 
-
+    return False
 
 
 #----------------------
@@ -105,10 +126,11 @@ def printBoard(board):
 #main game loop
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+    screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT), pygame.RESIZABLE)
     pygame.display.set_caption("Connect Four")
     isPlayerOne = True
     board = initBoard()
+    turnNum = 0
 
 
     while(True):
@@ -126,25 +148,25 @@ def main():
 
                 if nextEmptySpace != None:
                     board = dropToken(board, nextEmptySpace, isPlayerOne)
+                    turnNum += 1
+                   
+                    if turnNum >= 7: #minimum number of turns before win
+                        if isPlayerOne:
+                            if checkForWin(board, 'R'): #check for player one win 
+                                #playerWin(isPlayerOne)
+                                pass
+                        else:
+                            if checkForWin(board, 'Y'): #check for player two win
+                                #playerWin(isPlayerOne)
+                                pass
                     
                     isPlayerOne = not isPlayerOne
                     printBoard(board)
 
-
             drawBoard(screen, mousePos, board, isPlayerOne) # redraws the board after each mouse movement
 
 
-        
-                
-
-
-
-
-
-
-
-           
-                
+            
 
 if __name__ == "__main__":
 
