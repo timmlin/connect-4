@@ -60,7 +60,7 @@ class testDropToken(unittest.TestCase):
         self.assertEqual(board[3][0], 'R')
 
     def testDropPlayerTwoToken(self):
-        """drops player two's yellow token in column 3"""
+        """drops player two's yellow token in column 5"""
         board = initBoard()
         board = dropToken(board, [5,6], False)
         self.assertEqual(board[5][6], 'Y')
@@ -68,8 +68,129 @@ class testDropToken(unittest.TestCase):
 
 
 
+class testCheckForWin(unittest.TestCase):
+    """tests the check for a win condition function"""
+
+#----------horizontal-tests------------
+    def testHorizontalWin(self):
+        board = [
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', 'R', 'R', 'R', 'R', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-']
+        ]
+        self.assertTrue(checkForWin(board, 'R'))
+
+    def testWrappedHorizontalWin(self):
+        """checks the win check returns false when 
+        the tokens wrap around the board"""
+        board = [
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['Y', '-', '-', '-', 'Y', 'Y', 'Y'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-']
+        ]
+        self.assertFalse(checkForWin(board, 'Y'))
+
+    def testHorizontalThreeInARow(self):
+        """checks the win check returns false when 
+        there are only 3 in a row"""
+        board = [
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', 'R', 'R', 'R', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-']
+        ]
+        self.assertFalse(checkForWin(board, 'R'))
 
 
+
+#----------vertical-tests------------
+    def testVerticalWin(self):
+        board = [
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', 'Y', '-', '-', '-', '-'],
+            ['-', '-', 'Y', '-', '-', '-', '-'],
+            ['-', '-', 'Y', '-', '-', '-', '-'],
+            ['-', '-', 'Y', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-']
+        ]
+        self.assertTrue(checkForWin(board, 'Y'))
+
+    def testWrappedVerticalWin(self):
+        board = [
+            ['-', '-', '-', '-', '-', 'R', '-'],
+            ['-', '-', '-', '-', '-', 'R', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', 'R', '-'],
+            ['-', '-', '-', '-', '-', 'R', '-']
+        ]
+        self.assertFalse(checkForWin(board, 'R'))
+
+
+    def testVerticalThreeInARow(self):
+        board = [
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', 'R', '-', '-', '-'],
+            ['-', '-', '-', 'R', '-', '-', '-'],
+            ['-', '-', '-', 'R', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-']
+        ]
+        self.assertFalse(checkForWin(board, 'R'))
+
+
+#----------Diagonal-tests------------
+    def testDiagonalWin(self):
+        board = [
+            ['-', '-', '-', 'R', '-', '-', '-'],
+            ['-', '-', '-', '-', 'R', '-', '-'],
+            ['-', '-', '-', '-', '-', 'R', '-'],
+            ['-', '-', '-', '-', '-', '-', 'R'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-']
+        ]
+        self.assertTrue(checkForWin(board, 'R'))
+
+    def testWrappedDiagonalWin(self):
+        board = [
+            ['-', '-', '-', '-', 'Y', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', 'Y', '-', '-', '-', '-', '-'],
+            ['-', '-', 'Y', '-', '-', '-', '-'],
+            ['-', '-', '-', 'Y', '-', '-', '-']
+        ]
+        self.assertFalse(checkForWin(board, 'Y'))
+
+    def testNegativeDiagonalWin(self):
+        board = [
+            ['-', '-', '-', '-', 'R', '-', '-'],
+            ['-', '-', '-', 'R', '-', '-', '-'],
+            ['-', '-', 'R', '-', '-', '-', '-'],
+            ['-', 'R', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', '-']
+        ]
+        self.assertTrue(checkForWin(board, 'R'))
+
+    def testWrappedNegativeDiagonalWin(self):
+        board = [
+            ['-', '-', '-', '-', '-', '-', '-'],
+            ['-', 'R', '-', '-', '-', '-', '-'],
+            ['R', '-', '-', '-', '-', '-', '-'],
+            ['-', '-', '-', '-', '-', '-', 'R'],
+            ['-', '-', '-', '-', '-', 'R', '-'],
+            ['-', '-', '-', '-', '-', '-', '-']
+        ]
+        self.assertFalse(checkForWin(board, 'R'))
 
 
 if __name__ == '__main__':
