@@ -1,6 +1,7 @@
 import math 
 import pygame
 from sys import exit
+from time import sleep
 
 BOARDWIDTH = 7
 BOARDHEIGHT = 6
@@ -68,21 +69,25 @@ def playerWin(isPlayerOne, screen):
     winTextRect.center = (SCREENWIDTH / 2, SQUARESIZE / 2)
     screen.blit(winText, winTextRect)
 
-    #creates the play again button and draws it to the screen
+    #creates the play again button 
     buttonTextFont = pygame.font.Font('freesansbold.ttf', 24)
     playAgainButtonPos = ((SCREENWIDTH / 2) - 175, (SCREENHEIGHT / 2) - 37)
     playAgainButton = pygame.Surface((150,50))
     playAgainButton.fill((50,50,50))
     playAgainButtonText = buttonTextFont.render('Play Again', True, (225,225,225), (50,50,50))
     playAgainButton.blit(playAgainButtonText, (5,10))
-    screen.blit(playAgainButton, playAgainButtonPos)
 
-    #creates the quit button and draws it to the screen
+    #creates the quit button
     quitButtonPos = ((SCREENWIDTH / 2) + 25, (SCREENHEIGHT / 2) - 37)
     quitButton = pygame.Surface((150,50))
     quitButton.fill((50,50,50))
     quitButtonText = buttonTextFont.render('Quit', True, (225,225,225), (50,50,50))
     quitButton.blit(quitButtonText, (50,10))
+
+    pygame.display.update()
+
+    sleep(1.5)
+    screen.blit(playAgainButton, playAgainButtonPos)
     screen.blit(quitButton, quitButtonPos)
 
     while True:
@@ -95,9 +100,9 @@ def playerWin(isPlayerOne, screen):
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                if playAgainButton.get_rect(topleft=playAgainButtonPos.collidepoint(pos)):
+                if playAgainButton.get_rect(topleft=playAgainButtonPos).collidepoint(pos):
                     main()
-                elif quitButton.get_rect(topleft=quitButtonPos.collidepoint(pos)):
+                elif quitButton.get_rect(topleft=quitButtonPos).collidepoint(pos):
                     pygame.quit()
                     exit()
     
