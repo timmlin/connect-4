@@ -20,12 +20,14 @@ def drawBoard(screen, nextEmptySpace, board, isPlayerOne):
     each square has a white circle to indicate the square is empty or filled with a red or yellow
     token. The current row the mouse is in is highlighted in grey."""
     pygame.draw.rect(screen,(255,255,255), (0,0, SCREENWIDTH, SQUARESIZE)) # draws a white rectangle above the baord to prvent multiple tokens being drawn
+    
+    #draws the blue board
     pygame.draw.rect(screen, (0,0,225), (0,SQUARESIZE, SCREENWIDTH, SCREENHEIGHT)) 
 
-    #draws horizontal lines
+    #draws horizontal lines on the board
     for rowNum in range(1, BOARDHEIGHT +1):
             pygame.draw.line(screen, (0,0,0), (0, SQUARESIZE * rowNum), (SCREENWIDTH, SQUARESIZE * rowNum), width=3)
-    #draws vertical lines
+    #draws vertical lines on the board
     for colNum in range(BOARDWIDTH+1):
             pygame.draw.line(screen, (0,0,0), (SQUARESIZE * colNum, SQUARESIZE ), (SQUARESIZE * colNum, SCREENHEIGHT), width=3)
 
@@ -52,7 +54,31 @@ def drawBoard(screen, nextEmptySpace, board, isPlayerOne):
         pygame.draw.circle(screen, (255,255,0), (nextEmptySpace[0], SQUARESIZE / 2), TOKENSIZE)
 
      
+def playerWin(isPlayerOne, screen):
 
+    font = pygame.font.Font('freesansbold.ttf', 64)
+ 
+    if isPlayerOne:
+        winText = font.render('Player One Wins', True, (255,0,0), (0,0,0))
+    else:
+        winText = font.render('Player Two Wins', True, (255,255,0), (0,0,0))
+
+    winTextRect = winText.get_rect()
+    winTextRect.center = (SCREENWIDTH / 2, SQUARESIZE / 2)
+
+   
+
+    while True:
+        screen.blit(winText, winTextRect)
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            #close game window
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+    
+    
 #------------------------------------------
 #-------Game-Logic-Functions---------------
 #------------------------------------------
@@ -123,6 +149,7 @@ def printBoard(board):
         print(row)
     print("\n")
 
+
 #main game loop
 def main():
     pygame.init()
@@ -150,18 +177,20 @@ def main():
                     board = dropToken(board, nextEmptySpace, isPlayerOne)
                     turnNum += 1
                    
+                    printBoard(board)
+                    drawBoard(screen, mousePos, board, isPlayerOne) # redraws the board a token has been dropped
+
                     if turnNum >= 7: #minimum number of turns before win
                         if isPlayerOne:
                             if checkForWin(board, 'R'): #check for player one win 
-                                #playerWin(isPlayerOne)
-                                pass
+                                playerWin(isPlayerOne, screen)
+                                
                         else:
                             if checkForWin(board, 'Y'): #check for player two win
-                                #playerWin(isPlayerOne)
-                                pass
+                                playerWin(isPlayerOne, screen)
+                                
                     
                     isPlayerOne = not isPlayerOne
-                    printBoard(board)
 
             drawBoard(screen, mousePos, board, isPlayerOne) # redraws the board after each mouse movement
 
