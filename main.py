@@ -54,22 +54,29 @@ def drawBoard(screen, nextEmptySpace, board, isPlayerOne):
         pygame.draw.circle(screen, (255,255,0), (nextEmptySpace[0], SQUARESIZE / 2), TOKENSIZE)
 
      
+
+
 def playerWin(isPlayerOne, screen):
 
-    font = pygame.font.Font('freesansbold.ttf', 64)
- 
+    winTextfont = pygame.font.Font('freesansbold.ttf', 64)
     if isPlayerOne:
-        winText = font.render('Player One Wins', True, (255,0,0), (0,0,0))
+        winText = winTextfont.render('Player One Wins', True, (255,0,0), (0,0,0))
     else:
-        winText = font.render('Player Two Wins', True, (255,255,0), (0,0,0))
-
+        winText = winTextfont.render('Player Two Wins', True, (255,255,0), (0,0,0))
     winTextRect = winText.get_rect()
     winTextRect.center = (SCREENWIDTH / 2, SQUARESIZE / 2)
+    screen.blit(winText, winTextRect)
 
-   
+    buttonTextFont = pygame.font.Font('freesansbold.ttf', 24)
+    playAgainButton = pygame.Surface((150,50))
+    playAgainButton.fill((50,50,50))
+    playAgainButtonText = buttonTextFont.render('Play Again?', True, (225,225,225), (50,50,50))
+    playAgainButton.blit(playAgainButtonText, (5,10))
+    screen.blit(playAgainButton, ((SCREENWIDTH / 2) - 150, (SCREENHEIGHT / 2) - 37))
+
+    
 
     while True:
-        screen.blit(winText, winTextRect)
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -77,6 +84,10 @@ def playerWin(isPlayerOne, screen):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                if playAgainButton.get_rect(topleft=((SCREENWIDTH / 2) - 150, (SCREENHEIGHT / 2) - 37)).collidepoint(pos):
+                    main()
     
     
 #------------------------------------------
